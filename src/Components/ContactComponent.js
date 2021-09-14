@@ -8,6 +8,8 @@ import {
   Label,
   Input,
   Col,
+  Row,
+  FormFeedback,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 class Contact extends Component {
@@ -22,6 +24,12 @@ class Contact extends Component {
       agree: false,
       contactType: "Tel.",
       message: "",
+      touched: {
+        firstname: false,
+        lastname: false,
+        telnum: false,
+        email: false,
+      },
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -38,6 +46,36 @@ class Contact extends Component {
     event.preventDefault();
     console.log("current state" + JSON.stringify(this.state));
     alert("current state" + JSON.stringify(this.state));
+  }
+  handleBlur = (field) => (evt) => {
+    this.setState({
+      touched: { ...this.state.touched, [field]: true },
+    });
+  };
+  validate(firstname, lastname, telnum, email) {
+    const errors = {
+      firstname: "",
+      lastname: "",
+      telnum: "",
+      email: "",
+    };
+    if (this.state.touched.firstname && firstname.length < 3)
+      errors.firstname = "First name should be more than 3 characters";
+    else if (this.state.touched.firstname && firstname.length > 3)
+      errors.firstname = "First name should be less than 10 characters";
+
+    if (this.state.touched.lastname && lastname.length < 3)
+      errors.lastname = "lastname  should be more than 3 characters";
+    else if (this.state.touched.lastname && lastname.length > 3)
+      errors.lastname = "last name should be less than 10 characters";
+    const reg = /^\d+$/;
+    if (this.state.touched.telnum && reg.test(telnum))
+      errors.telnum = "Tel. Number shoild contains only numbers";
+    if (
+      this.state.touched.email &&
+      email.split("").filter((x) => x === "@").length !== 1
+    )
+      errors.email = "Email shuld contain @";
   }
   render() {
     return (
